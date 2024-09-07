@@ -1,15 +1,3 @@
-const GameController = (function() {
-    let gameboard = GameBoard();
-    let player1 = Player(1);
-    let player2 = Player(2);
-    
-    let test = function(){
-        console.log(gameboard.getBoard);
-        gameboard.placeTile(player1,0,0)
-    }
-
-    return {test};
-})();
 
 let Player = (side) => {
     const playerName = side;
@@ -51,6 +39,19 @@ let GameBoard = (function() {
     return {getBoard, placeTile};
 
     
+    
 })();
 
-const init = GameController();
+const GameController = (function() {
+    let player1 = Player(1);
+    let player2 = Player(2);
+    
+    let test = function(){
+        console.log(GameBoard.getBoard());
+        GameBoard.placeTile(player1,0,0);
+    }
+
+    return {test};
+})();
+
+const init = GameController.test();
