@@ -1,57 +1,55 @@
-
-let Player = (side) => {
-    const playerName = side;
-    const tile = function(side) {
-        if(side == 1)
-            return "X"
-        else if (side ==2)
-            return "O"
-    }; 
-
-    return {tile, playerName};
-}
-
-let GameBoard = (function() {
+const gameBoard = (function () {
     const row = 3;
     const col = 3;
-    let gameboard = [row][col];
+    let board = [
+        ["_","_","_"],
+        ["_","_","_"],
+        ["_","_","_"]
+    ];
 
-    let getBoard = function() {
-        return gameboard;
-    }
+    const getBoard = () => board;
 
-    let checkTile = function(x,y) {
-        let tile = gameboard[x][y];
-        if (tile == null)
-            return true;
-    }
-
-    let placeTile = function(player,x,y) {
-        if(checkTile(x,y)) {
-            gameboard[x][y] = player.tile;
+    const checkTile = function(x,y) {
+        if (board[x][y] != "_") {
             return true;
         }
-        else {
-            return false;
+        return false;
+    }
+    const placeTile = function(player,x,y) {
+        if (!checkTile(x,y)) {
+            board[x][y] = player.getMarker();
         }
     }
 
+    
     return {getBoard, placeTile};
-
-    
-    
 })();
 
-const GameController = (function() {
-    let player1 = Player(1);
-    let player2 = Player(2);
-    
-    let test = function(){
-        console.log(GameBoard.getBoard());
-        GameBoard.placeTile(player1,0,0);
+const createPlayer = function(playerSide, mark) {
+    let marker = mark;
+    let side = playerSide;
+    let wins = 0
+
+    let getSide = () => side;
+    let getMarker = () => marker;
+
+    let getWins = () => wins;
+    let increaseWins = function() {
+        wins++;
+        return wins;
     }
 
-    return {test};
-})();
+    return {getSide, getWins, getMarker, getWins};
+}
 
-const init = GameController.test();
+const gameController = (function() {
+    let player1 = createPlayer(1, "O"); 
+    let player2 = createPlayer(2, "X");
+
+    gameBoard.placeTile(player1, 0, 0);
+    gameBoard.placeTile(player2, 1, 0);
+    gameBoard.placeTile(player1, 1, 0);
+    //expected output [O,X,_]
+
+    console.log(gameBoard.getBoard());
+})();
