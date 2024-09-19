@@ -23,52 +23,49 @@ const gameBoard = (function () {
     }
 
     const checkWins = function() {
-        debugger;
-        const checkVertical = (function() {
+        const checkVertical = function() {
             for (let i = 0; i<2; i++) {
                 let firstChar = board[0][i];
                 console.log(firstChar);
                 if (firstChar == '_')
-                    return false;
-                for (let j = 1; j<2; j++) {
-                    if (board[j][i] != firstChar) 
-                        return false;
-                }
+                    continue;
+                if (board[1][i] == firstChar && board[2][i] == firstChar)
+                    return true;
             }
-            return true;
-        })();
-        const checkHorizontal = (function() {
+            
+            return false;
+
+        };
+        const checkHorizontal = function() {
             for (let i = 0; i<2; i++) {
                 let firstChar = board[i][0];
+                console.log(firstChar);
                 if (firstChar == '_')
-                    return false;
-                for (let j = 1; j<2; j++) {
-                    if (board[i][j] != firstChar) 
-                        return false;
-                }
+                    continue;
+                if (board[i][1] == firstChar && board[i][2] == firstChar)
+                    return true;
             }
-            return true;
-        })();
-        const checkDiagonal = (function() {
+            return false;
+        };
+        const checkDiagonal = function() {
             let firstChar1 = board[0][0];
             let firstChar2 = board[0][2];
             let middle = board[1][1];
             let lastChar1 = board[2][0];
             let lastChar2 = board[2][2];
 
-            if (firstChar1 == '_' || firstChar2 == '_')
-                return false;
-            if (firstChar1 != middle && middle != lastChar2) {
-                return false;
+            if (firstChar1 != '_' && firstChar1 == middle && middle == lastChar2) {
+                return true;
             }
-            if (firstChar2 != middle && middle != lastChar1) {
-                return false;
+            if (firstChar2 != '_' && firstChar2 == middle && middle == lastChar1) {
+                return true;
             }
 
-            return true;
-        })();
+            return false;
+        };
 
-        if (checkVertical || checkHorizontal || checkDiagonal) {
+        if (checkVertical() || checkHorizontal() || checkDiagonal()){
+            console.log("win");
             return true;
         }
         return false;
@@ -114,13 +111,13 @@ const gameController = (function() {
         let y = Number(prompt(`player ${currentPlayer.getMarker()} y:`));
 
         gameBoard.placeTile(currentPlayer, x, y);
-        //swapTurn();
+        swapTurn();
     }
 
     let gameFinished = false;
 
     //expected output [O,X,_]
-    while (!gameFinished) {
+    while (gameFinished) {
         queryPlayer();
         if (gameBoard.checkWins()) {
             gameFinished = true;
