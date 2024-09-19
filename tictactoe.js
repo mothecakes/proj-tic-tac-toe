@@ -10,7 +10,7 @@ const gameBoard = (function () {
     const getBoard = () => board;
 
     const checkTile = function(x,y) {
-        if (board[y][x] != "_") {
+        if (board[x][y] != "_") {
             return true;
         }
         return false;
@@ -18,7 +18,7 @@ const gameBoard = (function () {
 
     const placeTile = function(player,x,y) {
         if (!checkTile(x,y)) {
-            board[y][x] = player.getMarker();
+            board[x][y] = player.getMarker();
         }
     }
 
@@ -75,6 +75,37 @@ const gameBoard = (function () {
     return {getBoard, placeTile, checkWins};
 })();
 
+const renderer = (function(){
+    const updateDisplay = function() {
+        const width = 3;
+        let board = gameBoard.getBoard();
+        const buttons = document.querySelectorAll(".container div")
+        let count = 0;
+                    console.log("called");
+        board.forEach(function(row) {
+            row.forEach(function(element) {
+                switch (element) {
+                    case "X": 
+                        buttons[count].style.backgroundColor = "red";
+                        count++;
+                        break;
+                    
+                    case "O": 
+                        buttons[count].style.backgroundColor = "green";
+                        count++;
+                        break;
+                    
+                    default: 
+                        buttons[count].style.backgroundColor = "blue";
+                        count++;
+                }
+            })
+        })
+    }
+    
+    return {updateDisplay};
+})();
+
 const createPlayer = function(playerSide, mark) {
     let marker = mark;
     let side = playerSide;
@@ -97,6 +128,7 @@ const gameController = (function() {
     let player2 = createPlayer(2, "X");
 
     let currentPlayer = player2;
+
     
     const swapTurn = function() {
         if (currentPlayer == player2) {
@@ -106,23 +138,36 @@ const gameController = (function() {
         currentPlayer = player2;
     }
 
-    const queryPlayer = function() {
-        let x = Number(prompt(`player ${currentPlayer.getMarker()} x:`));
-        let y = Number(prompt(`player ${currentPlayer.getMarker()} y:`));
-
+    const queryPlayer = function(x, y) {
         gameBoard.placeTile(currentPlayer, x, y);
+        console.log(gameBoard.getBoard());
         swapTurn();
     }
+
+    const init = (function() {
+        let buttons = document.querySelectorAll(".container div");
+
+        let count = 0;
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                buttons[count].addEventListener("click", function() {
+                    console.log(x +", " + y);
+                    queryPlayer(x, y);
+                    renderer.updateDisplay();
+                })
+                count++;
+            }
+        }
+    })();
 
     let gameFinished = false;
 
     //expected output [O,X,_]
     while (gameFinished) {
-        queryPlayer();
         if (gameBoard.checkWins()) {
             gameFinished = true;
         }
-        console.log(gameBoard.getBoard());
     }
 
 })();
+

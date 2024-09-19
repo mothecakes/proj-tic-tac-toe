@@ -10,8 +10,8 @@
     max-width: 300px;
     min-width: 100px;
     min-height: 100px;
-    background-color: blue;
-    outline: solid 1px;
+    outline: solid 1px black;
+    background-color: aliceblue;
 }
 
 .col1 {
